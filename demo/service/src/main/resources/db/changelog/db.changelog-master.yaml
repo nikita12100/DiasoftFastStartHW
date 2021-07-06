@@ -1,0 +1,90 @@
+databaseChangeLog:
+  - logicalFilePath: db/changelog/db.changelog-01.yaml
+  - changeSet:
+      id: 1
+      author: aleonov
+      preConditions:
+        onFail: MARK_RAN
+        not:
+           tableExists:
+              tableName: sms_verification
+      changes:
+        - createTable:
+            tableName: sms_verification
+            columns:
+              - column:
+                  name: verificationid
+                  type: NUMERIC(19,0)
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: processguid
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: phonenumber
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: secretcode
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: status
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+
+#  - changeSet:
+#      id: 2
+#      author: aleonov
+#      comment: "insert greetings"
+#      changes:
+#        - insert:
+#            tableName: greeting
+#            columns:
+#              - column:
+#                  name: id
+#                  value: 1
+#              - column:
+#                  name: content
+#                  value: "Rafshan"
+#        - insert:
+#            tableName: greeting
+#            columns:
+#              - column:
+#                  name: id
+#                  value: 2
+#              - column:
+#                  name: content
+#                  value: "Jamshoot"
+#  - changeSet:
+#      id: 3
+#      author: aleonov
+#      comment: "Create sequence"
+#      preConditions:
+#        onFail: MARK_RAN
+#        not:
+#          sequenceExists:
+#            schemaName: user1
+#            sequenceName: my_gr_id_seq
+#      changes:
+#        - createSequence:
+#            cacheSize: 371717
+#            catalogName: cat
+#            cycle: true
+#            dataType: int
+#            incrementBy: 1
+#            maxValue: 1000
+#            minValue: 3
+#            schemaName: user1
+#            sequenceName: my_gr_id_seq
+#            startValue: 3
+#      rollback:
+#        - delete:
+#            tableName: greeting

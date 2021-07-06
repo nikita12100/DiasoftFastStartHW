@@ -1,0 +1,73 @@
+server:
+  port: 6083
+  servlet:
+    context-path: /${SERVICE_NAME:demomsa}
+
+security:
+  enabled: false
+  oauth2:
+    client:
+      clientId:
+      clientSecret:
+      scope:
+      accessTokenUri:
+      userAuthorizationUri:
+    resource:
+      jwt:
+        key-uri:
+
+eureka:
+  client:
+    enabled: true
+    fetchRegistry: true
+    registerWithEureka: true
+    serviceUrl:
+      defaultZone: http://localhost:6081/eureka
+  instance:
+    prefer-ip-address: true
+
+
+spring:
+  # Postgres
+  datasource:
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://subd1:5432/test
+    username: fsmsa
+    password: 12345678
+    hikari:
+      connection-test-query:
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQL95Dialect
+    show-sql: true
+    generate-ddl: false
+    hibernate:
+      ddl-auto: update
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    properties:
+      hibernate:
+        globally_quoted_identifiers: true # Для PostgreSQL установить в true, для MSSQL, Oracle в false
+        jdbc:
+          time_zone: UTC
+          lob:
+            non_contextual_creation: true
+  kafka:
+    bootstrap-servers: localhost:9092
+  cloud:
+    stream:
+      binders:
+        binderName:
+          type: kafka
+      bindings:
+        smsVerificationCreatedPublish:
+          destination: sms-verification-created
+        smsVerificationDeliveredSubscribe:
+          destination: sms-verification-created
+          group: demomsa
+  messages:
+    basename: i18n.messages
+#  liquibase:
+#    change-log: \database\src\main\resources\rootChangeLog.xml
+#spring:
+#  profiles:
+#    include: shared
