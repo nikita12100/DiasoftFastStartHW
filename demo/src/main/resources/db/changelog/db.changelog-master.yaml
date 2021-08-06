@@ -1,0 +1,41 @@
+databaseChangeLog:
+  - logicalFilePath: db/changelog/db.changelog-master.yaml
+  - changeSet:
+      id: 1
+      author: nikita
+      changes:
+        - createTable:
+            tableName: greeting
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: content
+                  type: varchar(256)
+                  constraints:
+                    unique: true
+                    nullable: false
+  - changeSet:
+      id: 2
+      author: nikita
+      changes:
+        - insert:
+            tableName: greeting
+            columns:
+              - column:
+                  name: content
+                  value: "Hello, Nikita!"
+        - insert:
+            tableName: greeting
+            columns:
+              - column:
+                  name: content
+                  value: "Hello, Den!"
+      rollback:
+        - delete:
+            tableName: greeting
