@@ -1,23 +1,32 @@
-package com.testcontainers.demo;
+package ru.diasoft.demo.domain;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+
 @Entity
-public class Animal {
+public class Greeting {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue
     private long id;
     private String name;
 
-    public Animal(String name) {
+    public Greeting() {
+    }
+
+    public Greeting(long id, String name) {
+        this.id = id;
         this.name = name;
     }
 
-    public Animal() {
+    public long getId() {
+        return id;
+    }
 
+    public String getName() {
+        return name;
     }
 
     public void setId(long id) {
@@ -26,13 +35,5 @@ public class Animal {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public long getId() {
-        return this.id;
-    }
-
-    public String getName() {
-        return this.name;
     }
 }
