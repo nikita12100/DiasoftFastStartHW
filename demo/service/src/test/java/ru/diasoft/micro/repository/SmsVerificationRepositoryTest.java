@@ -58,8 +58,6 @@ public class SmsVerificationRepositoryTest {
                 repository.findBySecretCodeAndProcessGuidAndStatus(SECRET_CODE, smsVerificationCreated.getProcessGuid(), STATUS_CREATED).get(),
                 smsVerificationCreated
         );
-        Assert.assertNull(repository.findBySecretCodeAndProcessGuidAndStatus(SECRET_CODE, smsVerificationCreated.getProcessGuid(), STATUS_CREATED)
-                .orElse(null));
     }
 
     @Test

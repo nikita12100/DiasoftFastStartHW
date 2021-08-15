@@ -14,10 +14,12 @@ public class SmsDeliveredListenerService implements SmsVerificationDeliveredSubs
 
     private final SmsVerificationRepository repository;
 
+    private static final String STATUS_OK = &quot;OK&quot;;
+
     @Override
     public void smsVerificationDelivered(SmsDeliveredMessage msg) {
-<span class="nc" id="L19">        repository.updateStatusByProcessGuid(&quot;OK&quot;,msg.getGuid());</span>
-<span class="nc" id="L20">    }</span>
+<span class="nc" id="L21">        repository.updateStatusByProcessGuid(STATUS_OK, msg.getGuid());</span>
+<span class="nc" id="L22">    }</span>
 }
 
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

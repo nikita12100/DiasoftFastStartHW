@@ -2,14 +2,8 @@
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import ru.diasoft.micro.domain.SmsVerification;
-import ru.diasoft.micro.domain.SmsVerificationCheckRequest;
-import ru.diasoft.micro.domain.SmsVerificationCheckResponse;
-import ru.diasoft.micro.domain.SmsVerificationPostRequest;
-import ru.diasoft.micro.domain.SmsVerificationPostResponse;
+import ru.diasoft.micro.domain.*;
 import ru.diasoft.micro.model.SmsVerificationMessage;
 import ru.diasoft.micro.repository.SmsVerificationRepository;
 import ru.diasoft.micro.smsverificationcreated.publish.SmsVerificationCreatedPublishGateway;
@@ -18,36 +12,48 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
 
-<span class="fc" id="L21">@RequiredArgsConstructor</span>
+<span class="fc" id="L15">@RequiredArgsConstructor</span>
 @Service
 @Primary
 public class SmsVerificationServiceImpl implements SmsVerificationService {
 
-    private final SmsVerificationRepository repository;
-    private final SmsVerificationCreatedPublishGateway messagingGateway;
+    private final SmsVerificationRepository smsVerificationRepository;
+    private final SmsVerificationCreatedPublishGateway gateway;
+
+    private static final String STATUS_OK = &quot;OK&quot;;
+    private static final String STATUS_WAITING = &quot;WAITING&quot;;
 
     @Override
     public SmsVerificationCheckResponse dsSmsVerificationCheck(SmsVerificationCheckRequest smsVerificationCheckRequest) {
-<span class="fc" id="L31">        Optional&lt;SmsVerification&gt; smsVerification = repository.findBySecretCodeAndProcessGuidAndStatus(smsVerificationCheckRequest.getCode(), smsVerificationCheckRequest.getProcessGUID(), &quot;OK&quot;);</span>
-<span class="fc" id="L32">        return new SmsVerificationCheckResponse(smsVerification.isPresent());</span>
+<span class="fc" id="L28">        Optional&lt;SmsVerification&gt; result = smsVerificationRepository.findBySecretCodeAndProcessGuidAndStatus(smsVerificationCheckRequest.getCode(), smsVerificationCheckRequest.getProcessGUID(), STATUS_OK);</span>
+
+<span class="fc" id="L30">        SmsVerificationCheckResponse response = new SmsVerificationCheckResponse();</span>
+<span class="fc" id="L31">        response.setCheckResult(result.isPresent());</span>
+
+<span class="fc" id="L33">        return response;</span>
     }
 
     @Override
     public SmsVerificationPostResponse dsSmsVerificationCreate(SmsVerificationPostRequest smsVerificationPostRequest) {
-<span class="fc" id="L37">        String guid = UUID.randomUUID().toString();</span>
-<span class="fc" id="L38">        String secretCode = String.format(&quot;%04d&quot;, new Random().nextInt(10000));</span>
 
         SmsVerification smsVerification =
-<span class="fc" id="L41">                SmsVerification.builder()</span>
-<span class="fc" id="L42">                        .phoneNumber(smsVerificationPostRequest.getPhoneNumber())</span>
-<span class="fc" id="L43">                        .processGuid(guid)</span>
-<span class="fc" id="L44">                        .secretCode(secretCode)</span>
-<span class="fc" id="L45">                        .status(&quot;WAITING&quot;)</span>
-<span class="fc" id="L46">                        .build();</span>
+<span class="fc" id="L40">                SmsVerification.builder()</span>
+<span class="fc" id="L41">                        .phoneNumber(smsVerificationPostRequest.getPhoneNumber())</span>
+<span class="fc" id="L42">                        .processGuid(UUID.randomUUID().toString())</span>
+<span class="fc" id="L43">                        .secretCode(String.format(&quot;%04d&quot;, new Random().nextInt(10000)))</span>
+<span class="fc" id="L44">                        .status(STATUS_WAITING)</span>
+<span class="fc" id="L45">                        .build();</span>
 
-<span class="fc" id="L48">        repository.save(smsVerification);</span>
-<span class="fc" id="L49">        messagingGateway.smsVerificationCreated(SmsVerificationMessage.builder().guid(guid).code(secretCode).phoneNumber(smsVerificationPostRequest.getPhoneNumber()).build());</span>
-<span class="fc" id="L50">        return new SmsVerificationPostResponse(guid);</span>
+<span class="fc" id="L47">        SmsVerification createdSmsVerification = smsVerificationRepository.save(smsVerification);</span>
+
+<span class="fc" id="L49">        gateway.smsVerificationCreated(</span>
+<span class="fc" id="L50">                SmsVerificationMessage.builder()</span>
+<span class="fc" id="L51">                        .guid(createdSmsVerification.getProcessGuid())</span>
+<span class="fc" id="L52">                        .code(createdSmsVerification.getSecretCode())</span>
+<span class="fc" id="L53">                        .phoneNumber(smsVerificationPostRequest.getPhoneNumber())</span>
+<span class="fc" id="L54">                        .build());</span>
+
+<span class="fc" id="L56">        return new SmsVerificationPostResponse(createdSmsVerification.getProcessGuid());</span>
     }
 }
 

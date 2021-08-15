@@ -98,6 +98,29 @@
                         </configuration>
                     </execution>-->
                     <execution>
+                        <id>Generate Events</id>
+                        <!-- DQCodeGen+Event-Driven Architectures (EDA). conf.diasoft.ru/pages/viewpage.action?pageId=50894482 -->
+                        <goals>
+                            <goal>qarcher</goal>
+                        </goals>
+                        <configuration>
+                            <skip>true</skip>
+                            <serviceName>demo</serviceName>
+                            <qarcherService>http://dsagregator2:8050</qarcherService>
+                            <targetPackage>ru.diasoft.digitalq</targetPackage>
+                            <qarcherModuleName>DQ Hackathon Tutorial</qarcherModuleName>
+                            <!--    -->
+                            <qarcherVersion>1.01.00</qarcherVersion>
+                            <!--    -->
+                            <asyncApi>true</asyncApi>
+                            <qarcherApproval>0</qarcherApproval>
+                            <qarcherConditionalApproval>0</qarcherConditionalApproval>
+                            <qarcherImplemented>0</qarcherImplemented>
+                            <useZonedDateTime>true</useZonedDateTime>
+                        </configuration>
+                    </execution>
+
+                    <execution>
                         <id>Generate Events Publisher</id>
                         <!-- DQCodeGen+Event-Driven Architectures (EDA). conf.diasoft.ru/pages/viewpage.action?pageId=50894482 -->
                         <goals>
